@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  background-color: #f8fafc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply min-h-screen bg-slate-50 text-slate-900 antialiased font-sans;
+}
+
+::selection {
+  background: #0ea5e9;
+  color: white;
+}
+
+.container {
+  @apply max-w-7xl mx-auto;
+}
+
+.glass-card {
+  @apply bg-white/85 backdrop-blur-md border border-white/20 shadow-xl;
+}
+
+.btn-gradient {
+  @apply bg-gradient-to-r from-sky-500 to-indigo-600 text-white hover:from-sky-600 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-sky-200;
+}
+
+/* Custom theme extensions for v4 if tailwind.config.js is ignored */
+@theme {
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+}
