@@ -31,7 +31,7 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
     return null;
   }
 
-  return authContext.token ? children : <Navigate to="/Expenzoir/signin" replace />;
+  return authContext.token ? children : <Navigate to="/signin" replace />;
 }
 
 function PublicOnlyRoute({ children }: { children: ReactNode }) {
@@ -41,7 +41,30 @@ function PublicOnlyRoute({ children }: { children: ReactNode }) {
     return null;
   }
 
-  return authContext.token ? <Navigate to="/Expenzoir/" replace /> : children;
+  return authContext.token ? <Navigate to="/" replace /> : children;
+}
+
+function DashboardRoutes() {
+  return (
+    <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+      <Route index element={<Home />} />
+      <Route path="upload" element={<Upload />} />
+      <Route path="history" element={<History />} />
+      <Route path="profile" element={<UserProfiles />} />
+      <Route path="calendar" element={<Calendar />} />
+      <Route path="blank" element={<Blank />} />
+      <Route path="form-elements" element={<FormElements />} />
+      <Route path="basic-tables" element={<BasicTables />} />
+      <Route path="alerts" element={<Alerts />} />
+      <Route path="avatars" element={<Avatars />} />
+      <Route path="badge" element={<Badges />} />
+      <Route path="buttons" element={<Buttons />} />
+      <Route path="images" element={<Images />} />
+      <Route path="videos" element={<Videos />} />
+      <Route path="line-chart" element={<LineChart />} />
+      <Route path="bar-chart" element={<BarChart />} />
+    </Route>
+  );
 }
 
 export default function App() {
@@ -50,8 +73,6 @@ export default function App() {
       <Router>
         <ScrollToTop />
         <Routes>
-<<<<<<< HEAD
-          {/* Vercel root routes */}
           <Route path="/" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             <Route index element={<Home />} />
             <Route path="upload" element={<Upload />} />
@@ -71,48 +92,30 @@ export default function App() {
             <Route path="bar-chart" element={<BarChart />} />
           </Route>
 
-=======
->>>>>>> 3c63753f807681cadcf3218491ef96754b0a5fb3
-          {/* Dashboard Layout */}
-          <Route path="/Expenzoir/" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+          <Route path="/Expenzoir" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             <Route index element={<Home />} />
             <Route path="upload" element={<Upload />} />
             <Route path="history" element={<History />} />
-
-            {/* Others Page */}
             <Route path="profile" element={<UserProfiles />} />
             <Route path="calendar" element={<Calendar />} />
             <Route path="blank" element={<Blank />} />
-
-            {/* Forms */}
             <Route path="form-elements" element={<FormElements />} />
-
-            {/* Tables */}
             <Route path="basic-tables" element={<BasicTables />} />
-
-            {/* Ui Elements */}
             <Route path="alerts" element={<Alerts />} />
             <Route path="avatars" element={<Avatars />} />
             <Route path="badge" element={<Badges />} />
             <Route path="buttons" element={<Buttons />} />
             <Route path="images" element={<Images />} />
             <Route path="videos" element={<Videos />} />
-
-            {/* Charts */}
             <Route path="line-chart" element={<LineChart />} />
             <Route path="bar-chart" element={<BarChart />} />
           </Route>
 
-          {/* Auth Layout */}
-<<<<<<< HEAD
           <Route path="/signin" element={<PublicOnlyRoute><SignIn /></PublicOnlyRoute>} />
           <Route path="/signup" element={<PublicOnlyRoute><SignUp /></PublicOnlyRoute>} />
-=======
->>>>>>> 3c63753f807681cadcf3218491ef96754b0a5fb3
           <Route path="/Expenzoir/signin" element={<PublicOnlyRoute><SignIn /></PublicOnlyRoute>} />
           <Route path="/Expenzoir/signup" element={<PublicOnlyRoute><SignUp /></PublicOnlyRoute>} />
 
-          {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

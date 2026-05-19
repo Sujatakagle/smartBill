@@ -1,9 +1,5 @@
 import { useState } from "react";
 
-<<<<<<< HEAD
-=======
-import { Link } from "react-router";
->>>>>>> 3c63753f807681cadcf3218491ef96754b0a5fb3
 import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import UserDropdown from "../components/header/UserDropdown";
@@ -65,25 +61,9 @@ const AppHeader: React.FC = () => {
                 />
               </svg>
             )}
-            {/* Cross Icon */}
           </button>
 
-<<<<<<< HEAD
           <div className="lg:hidden" />
-=======
-          <Link to="/" className="lg:hidden">
-            <img
-              className="dark:hidden"
-              src="images/logo/logo.svg"
-              alt="Logo"
-            />
-            <img
-              className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
-              alt="Logo"
-            />
-          </Link>
->>>>>>> 3c63753f807681cadcf3218491ef96754b0a5fb3
 
           <button
             onClick={toggleApplicationMenu}
@@ -104,7 +84,6 @@ const AppHeader: React.FC = () => {
               />
             </svg>
           </button>
-
         </div>
         <div
           className={`${
@@ -112,11 +91,8 @@ const AppHeader: React.FC = () => {
           } items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none`}
         >
           <div className="flex items-center gap-2 2xsm:gap-3">
-            {/* <!-- Dark Mode Toggler --> */}
             <ThemeToggleButton />
-            {/* <!-- Dark Mode Toggler --> */}
           </div>
-          {/* <!-- User Area --> */}
           <UserDropdown />
         </div>
       </div>
