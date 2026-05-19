@@ -1,6 +1,5 @@
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import ChartTab from "../common/ChartTab";
 
 interface StatisticsChartProps {
   data: number[];
@@ -73,6 +72,12 @@ export default function StatisticsChart({ data }: StatisticsChartProps) {
       axisTicks: {
         show: false,
       },
+      labels: {
+        style: {
+          fontSize: "11px",
+        },
+        rotate: 0,
+      },
     },
     yaxis: {
       labels: {
@@ -83,6 +88,44 @@ export default function StatisticsChart({ data }: StatisticsChartProps) {
         formatter: (val) => `₹${val}`,
       },
     },
+    responsive: [
+      {
+        breakpoint: 640,
+        options: {
+          chart: {
+            height: 250,
+          },
+          stroke: {
+            width: 2,
+          },
+          markers: {
+            size: 0,
+          },
+          grid: {
+            padding: {
+              left: 0,
+              right: 0,
+            },
+          },
+          xaxis: {
+            tickAmount: 5,
+            labels: {
+              style: {
+                fontSize: "10px",
+              },
+            },
+          },
+          yaxis: {
+            labels: {
+              offsetX: -8,
+              style: {
+                fontSize: "10px",
+              },
+            },
+          },
+        },
+      },
+    ],
   };
 
   const series = [
@@ -93,7 +136,8 @@ export default function StatisticsChart({ data }: StatisticsChartProps) {
   ];
 
   return (
-<div className="flex h-full w-full flex-col rounded-xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">      <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
+    <div className="flex h-full w-full min-w-0 flex-col rounded-xl border border-gray-200 bg-white px-4 pb-4 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+      <div className="mb-4 flex flex-col gap-5 sm:mb-6 sm:flex-row sm:justify-between">
         <div className="w-full">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
             Spending Trends
@@ -104,9 +148,14 @@ export default function StatisticsChart({ data }: StatisticsChartProps) {
         </div>
       </div>
 
-      <div className="max-w-full overflow-x-auto custom-scrollbar">
-        <div className="min-w-[1000px] xl:min-w-full">
-          <Chart options={options} series={series} type="area" height={310} />
+      <div className="min-w-0 max-w-full overflow-hidden">
+        <div className="min-w-0">
+          <Chart
+            options={options}
+            series={series}
+            type="area"
+            height={typeof window !== "undefined" && window.innerWidth < 640 ? 250 : 310}
+          />
         </div>
       </div>
     </div>

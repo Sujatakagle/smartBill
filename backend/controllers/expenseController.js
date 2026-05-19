@@ -86,15 +86,32 @@ exports.addExpense = async (req, res) => {
       : "Other";
     const date = req.body.date ? new Date(req.body.date) : new Date();
 
+    if (!shop || shop === "Unknown Merchant") {
+      return res.status(400).json({
+        msg: "Please enter the shop or merchant name before saving.",
+      });
+    }
+
     if (amount <= 0) {
       return res.status(400).json({ msg: "Valid amount is required" });
     }
 
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
     const existingExpense = await Expense.findOne({
       userId: req.user.id,
-      shop,
       amount,
-      date,
+      category,
+      paymentMethod,
+      $or: [
+        { shop },
+        { date: null },
+        { date: { $gte: startOfDay, $lte: endOfDay } },
+      ],
     });
 
     if (existingExpense) {

@@ -102,12 +102,36 @@ export default function Upload() {
   const handleConfirm = async () => {
     if (!extractedData) return;
 
+    const payload = normalizeExtractedData(extractedData);
+
+    if (!payload.shop || payload.shop === "Unknown Merchant") {
+      Swal.fire({
+        icon: "warning",
+        title: "Merchant name needed",
+        text: "Please enter the shop or merchant name before saving.",
+        confirmButtonText: "Edit Details",
+        confirmButtonColor: "#3b82f6",
+      });
+      return;
+    }
+
+    if (!payload.amount || payload.amount <= 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "Amount needed",
+        text: "Please enter a valid amount before saving.",
+        confirmButtonText: "Edit Details",
+        confirmButtonColor: "#3b82f6",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
       await axios.post(
         `${API_BASE_URL}/expense`,
-        normalizeExtractedData(extractedData),
+        payload,
         {
           headers: {
             "x-auth-token": token,

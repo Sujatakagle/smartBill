@@ -8,7 +8,7 @@ export default function RecentTransactions({ expenses }: Props) {
   const recentExpenses = [...(expenses || [])].slice(0, 5);
 
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-5 py-4 h-[420px] flex flex-col">
+    <div className="flex h-auto min-h-[360px] flex-col rounded-xl border border-gray-200 bg-white px-4 py-4 dark:border-gray-800 dark:bg-white/[0.03] sm:h-[420px] sm:px-5">
 
       {/* HEADER */}
       <div className="mb-4">
@@ -22,8 +22,47 @@ export default function RecentTransactions({ expenses }: Props) {
 
       {/* TABLE (SCROLL AREA) */}
       <div className="flex-1 overflow-y-auto">
+        <div className="space-y-3 md:hidden">
+          {recentExpenses.length > 0 ? (
+            recentExpenses.map((expense) => (
+              <div
+                key={expense._id}
+                className="rounded-lg border border-gray-100 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900/60"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-gray-900 dark:text-white">
+                      {expense.shop || "Unknown Shop"}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      {expense.category || "Other"} • {expense.paymentMethod || "Other"}
+                    </p>
+                  </div>
+                  <p className="shrink-0 text-sm font-bold text-gray-900 dark:text-white">
+                    ₹{Number(expense.amount || 0).toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                    })}
+                  </p>
+                </div>
+                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  {expense.date
+                    ? new Date(expense.date).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : "No Date"}
+                </p>
+              </div>
+            ))
+          ) : (
+            <p className="py-10 text-center text-sm text-gray-500">
+              No transactions found.
+            </p>
+          )}
+        </div>
 
-        <table className="w-full min-w-[600px]">
+        <table className="hidden w-full min-w-[600px] md:table">
 
           <thead>
             <tr className="border-b border-gray-200 dark:border-gray-800">

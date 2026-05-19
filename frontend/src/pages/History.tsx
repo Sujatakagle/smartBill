@@ -525,8 +525,36 @@ export default function History() {
     Other: "light",
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-[calc(100vh-8rem)] space-y-5">
+        <PageMeta
+          title="Expense History | Expenzoir"
+          description="View all your historical expenses"
+        />
+        <div>
+          <div className="h-8 w-56 animate-pulse rounded bg-gray-200 dark:bg-gray-800" />
+          <div className="mt-3 h-4 w-64 animate-pulse rounded bg-gray-100 dark:bg-gray-800/70" />
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div
+              key={index}
+              className="h-28 animate-pulse rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03]"
+            >
+              <div className="mb-4 h-4 w-20 rounded bg-gray-200 dark:bg-gray-800" />
+              <div className="h-6 w-24 rounded bg-gray-200 dark:bg-gray-800" />
+              <div className="mt-3 h-3 w-16 rounded bg-gray-100 dark:bg-gray-800/70" />
+            </div>
+          ))}
+        </div>
+        <div className="h-96 animate-pulse rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900" />
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-5">
+    <div className="min-h-[calc(100vh-8rem)] space-y-5">
       <PageMeta
         title="Expense History | Expenzoir"
         description="View all your historical expenses"
@@ -566,38 +594,38 @@ export default function History() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-5 py-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-3 py-4 sm:px-5">
           <div className="flex items-center gap-2 mb-2">
             <Wallet className="size-4 text-blue-500" />
-            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total Spent</span>
+            <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide sm:text-xs">Total Spent</span>
           </div>
-          <p className="text-xl font-bold text-gray-900 dark:text-white">
+          <p className="break-words text-base font-bold text-gray-900 dark:text-white sm:text-xl">
             ₹{totalSpent.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
           </p>
-          <p className="text-md text-gray-400 mt-0.5">{filteredExpenses.length} transactions</p>
+          <p className="mt-0.5 text-xs text-gray-400 sm:text-md">{filteredExpenses.length} transactions</p>
         </div>
 
-        <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-5 py-4">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-3 py-4 sm:px-5">
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp className="size-4 text-emerald-500" />
-            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Average</span>
+            <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide sm:text-xs">Average</span>
           </div>
-          <p className="text-xl font-bold text-gray-900 dark:text-white">
+          <p className="break-words text-base font-bold text-gray-900 dark:text-white sm:text-xl">
             ₹{avgAmount.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
-          <p className="text-md text-gray-400 mt-0.5">per transaction</p>
+          <p className="mt-0.5 text-xs text-gray-400 sm:text-md">per transaction</p>
         </div>
 
-        <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-5 py-4">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-3 py-4 sm:px-5">
           <div className="flex items-center gap-2 mb-2">
             <Receipt className="size-4 text-orange-500" />
-            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Records</span>
+            <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide sm:text-xs">Records</span>
           </div>
-          <p className="text-xl font-bold text-gray-900 dark:text-white">
+          <p className="break-words text-base font-bold text-gray-900 dark:text-white sm:text-xl">
             {filteredExpenses.length}
           </p>
-          <p className="text-md text-gray-400 mt-0.5">bills logged</p>
+          <p className="mt-0.5 text-xs text-gray-400 sm:text-md">bills logged</p>
         </div>
       </div>
 
@@ -614,12 +642,12 @@ export default function History() {
           />
         </div>
 
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <Filter className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400 pointer-events-none" />
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="pl-9 pr-8 py-2.5 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl outline-none focus:border-blue-500 dark:text-white appearance-none cursor-pointer"
+            className="w-full pl-9 pr-8 py-2.5 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl outline-none focus:border-blue-500 dark:text-white appearance-none cursor-pointer sm:w-auto"
           >
             {allCategories.map((cat) => (
               <option key={cat} value={cat}>
@@ -629,12 +657,12 @@ export default function History() {
           </select>
         </div>
 
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400 pointer-events-none" />
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="pl-9 pr-8 py-2.5 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl outline-none focus:border-blue-500 dark:text-white appearance-none cursor-pointer"
+            className="w-full pl-9 pr-8 py-2.5 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl outline-none focus:border-blue-500 dark:text-white appearance-none cursor-pointer sm:w-auto"
           >
             {allMonths.map((m) => (
               <option key={m} value={m}>
@@ -647,7 +675,58 @@ export default function History() {
 
       {/* Table */}
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden">
-        <div className="max-w-full overflow-x-auto">
+        <div className="space-y-3 p-4 sm:hidden">
+          {loading ? (
+            <div className="py-12 text-center">
+              <p className="text-gray-400 text-sm">Loading transactions...</p>
+            </div>
+          ) : filteredExpenses.length > 0 ? (
+            filteredExpenses.map((expense) => (
+              <div
+                key={expense._id}
+                className="rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-950/40"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-gray-900 dark:text-white">
+                      {expense.shop}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      {expense.date
+                        ? new Date(expense.date).toLocaleDateString("en-IN", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })
+                        : "—"}
+                    </p>
+                  </div>
+                  <span className="shrink-0 text-base font-bold text-gray-900 dark:text-white">
+                    ₹{expense.amount.toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </span>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <Badge color={categoryColors[expense.category] || "light"} size="md">
+                    {expense.category}
+                  </Badge>
+                  <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-gray-600 dark:bg-white/10 dark:text-gray-300">
+                    {expense.paymentMethod || "Other"}
+                  </span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="py-12 text-center text-sm text-gray-400">
+              {searchTerm || selectedCategory !== "all" || selectedMonth !== "all"
+                ? "No transactions match your filters"
+                : "No transactions recorded yet"}
+            </p>
+          )}
+        </div>
+        <div className="hidden max-w-full overflow-x-auto sm:block">
           {loading ? (
             <div className="py-20 text-center">
               <p className="text-gray-400 text-sm">Loading transactions...</p>

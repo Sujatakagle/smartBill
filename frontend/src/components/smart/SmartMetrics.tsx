@@ -56,28 +56,28 @@ export default function SmartMetrics({
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
       {data.map((item, i) => {
         const Icon = item.icon;
 
         return (
           <div
             key={i}
-            className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-5 py-4"
+            className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-3 py-4 sm:px-5"
           >
             <div className="flex items-center gap-2 mb-2">
-              <Icon className={`size-8 ${item.iconColor}`} />
+              <Icon className={`size-6 sm:size-8 ${item.iconColor}`} />
 
-              <span className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide sm:text-sm">
                 {item.label}
               </span>
             </div>
 
-            <p className="text-xl font-bold text-gray-900 dark:text-white">
+            <p className="break-words text-base font-bold text-gray-900 dark:text-white sm:text-xl">
               {item.value}
             </p>
 
-            <p className="text-md text-gray-400 mt-0.5">
+            <p className="mt-0.5 text-xs text-gray-400 sm:text-md">
               {item.subText}
             </p>
           </div>

@@ -83,6 +83,40 @@ export default function Home() {
     });
   }
 
+  if (loading) {
+    return (
+      <>
+        <PageMeta
+          title="Dashboard | Expenzoir"
+          description="Expenzoir Expense Dashboard"
+        />
+        <div className="min-h-[calc(100vh-8rem)] space-y-4 md:space-y-6">
+          <div>
+            <div className="h-8 w-56 animate-pulse rounded bg-gray-200 dark:bg-gray-800" />
+            <div className="mt-3 h-4 w-72 animate-pulse rounded bg-gray-100 dark:bg-gray-800/70" />
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="h-32 animate-pulse rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03]"
+              >
+                <div className="mb-4 h-4 w-24 rounded bg-gray-200 dark:bg-gray-800" />
+                <div className="h-6 w-28 rounded bg-gray-200 dark:bg-gray-800" />
+                <div className="mt-3 h-3 w-20 rounded bg-gray-100 dark:bg-gray-800/70" />
+              </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-12 gap-4 md:gap-6">
+            <div className="col-span-12 h-80 animate-pulse rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] lg:col-span-8" />
+            <div className="col-span-12 h-80 animate-pulse rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] lg:col-span-4" />
+            <div className="col-span-12 h-80 animate-pulse rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]" />
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <PageMeta
@@ -90,7 +124,15 @@ export default function Home() {
         description="Expenzoir Expense Dashboard"
       />
 
-      <div className="grid grid-cols-12 gap-4 md:gap-6">
+      <div className="min-h-[calc(100vh-8rem)] grid grid-cols-12 gap-4 md:gap-6">
+        <div className="col-span-12">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Welcome to Expenzoir
+          </h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Track your spending, receipts, and payment insights in one place.
+          </p>
+        </div>
 
         {/* METRICS */}
         <div className="col-span-12 space-y-6">
@@ -105,28 +147,28 @@ export default function Home() {
         {/* RECENT TRANSACTIONS */}
 
     {/* MAIN CHART (BIGGER) */}
-<div className="col-span-12 lg:col-span-8 flex">
+<div className="col-span-12 flex min-w-0 lg:col-span-8">
   <StatisticsChart data={monthlyData} />
 </div>
 
 {/* SIDE CHART (SMALLER) */}
-<div className="col-span-12 lg:col-span-4 flex">
+<div className="col-span-12 flex min-w-0 lg:col-span-4">
   <CategoryBreakdown
     categoryCounts={categoryCounts}
     totalSpent={totalSpent}
   />
 </div>{/* ROW: TRANSACTIONS + PAYMENT INTELLIGENCE */}
-<div className="col-span-12 flex flex-col lg:flex-row gap-6 items-stretch">
+<div className="col-span-12 flex min-w-0 flex-col items-stretch gap-4 lg:flex-row lg:gap-6">
 
   {/* LEFT - Recent Transactions */}
-  <div className="w-full lg:w-1/2 flex">
+  <div className="flex w-full min-w-0 lg:w-1/2">
     <div className="w-full h-full">
       <RecentTransactions expenses={expenses} />
     </div>
   </div>
 
   {/* RIGHT - Payment Intelligence */}
-  <div className="w-full lg:w-1/2 flex">
+  <div className="flex w-full min-w-0 lg:w-1/2">
     <div className="w-full h-full">
       <PaymentMethodChart expenses={expenses} />
     </div>
