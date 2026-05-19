@@ -3,30 +3,11 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { useContext } from "react";
 import type { ReactNode } from "react";
 
-// Assume these icons are imported from an icon library
-import {
-  BoxCubeIcon,
-  CalenderIcon,
-  ChevronDownIcon,
-  GridIcon,
-  HorizontaLDots,
-  ListIcon,
-  PageIcon,
-  PieChartIcon,
-  PlugInIcon,
-  TableIcon,
-  UserCircleIcon,
-} from "../icons";
+import { ChevronDownIcon, HorizontaLDots } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import { AuthContext } from "../context/AuthContext";
-import { 
-  LayoutDashboard, 
-  PlusCircle, 
-  History, 
-  User, 
-  LogOut,
-  Wallet
-} from "lucide-react";
+import { LayoutDashboard, PlusCircle, History, User, LogOut } from "lucide-react";
+import Swal from "sweetalert2";
 
 type NavItem = {
   name: string;
@@ -69,9 +50,22 @@ const AppSidebar: React.FC = () => {
     {
       icon: <LogOut size={20} />,
       name: "Logout",
-      onClick: () => {
-        authContext?.logout();
-        navigate("/Expenzoir/signin");
+      onClick: async () => {
+        const result = await Swal.fire({
+          title: "Log out?",
+          text: "Are you sure you want to sign out?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, log out",
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#465fff",
+          cancelButtonColor: "#6b7280",
+        });
+
+        if (result.isConfirmed) {
+          authContext?.logout();
+          navigate("/Expenzoir/signin");
+        }
       },
     },
   ];
@@ -266,18 +260,22 @@ const AppSidebar: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`py-8 flex ${
-          !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+        className={`-mx-3 flex justify-center overflow-hidden ${
+          isExpanded || isHovered || isMobileOpen ? "h-24" : "h-16"
         }`}
       >
-        <Link to="/Expenzoir/" className="flex items-center gap-3">
-          <div className="p-2 bg-brand-500 rounded-xl text-white shadow-lg shadow-brand-200">
-            <Wallet size={24} />
-          </div>
+        <Link to="/Expenzoir/" className="flex w-full items-center justify-center">
+          <img
+            src="/images/logo/logo.png"
+            alt="Expenzoir"
+            className={`block w-auto shrink-0 object-contain ${
+              isExpanded || isHovered || isMobileOpen
+                ? "h-28 max-w-[250px]"
+                : "h-20 max-w-[74px]"
+            }`}
+          />
           {(isExpanded || isHovered || isMobileOpen) && (
-            <span className="font-black text-xl tracking-tighter text-gray-900 dark:text-white uppercase">
-              Expenzoir
-            </span>
+            <span className="sr-only">Expenzoir</span>
           )}
         </Link>
       </div>

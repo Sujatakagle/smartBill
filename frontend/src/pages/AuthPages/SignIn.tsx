@@ -6,10 +6,10 @@ export default function SignIn() {
   return (
     <>
       <PageMeta
-        title="React.js SignIn Dashboard | Expenzoir - Next.js Admin Dashboard Template"
-        description="This is React.js SignIn Tables Dashboard page for Expenzoir - React.js Tailwind CSS Admin Dashboard Template"
+        title="Sign In | Expenzoir"
+        description="Sign in to Expenzoir to manage your expenses."
       />
-      <AuthLayout>
+      <AuthLayout subtitle="Welcome back. Sign in to manage your expenses.">
         <SignInForm />
       </AuthLayout>
     </>

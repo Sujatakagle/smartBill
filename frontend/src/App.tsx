@@ -50,6 +50,26 @@ export default function App() {
       <Router>
         <ScrollToTop />
         <Routes>
+          {/* Vercel root routes */}
+          <Route path="/" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+            <Route index element={<Home />} />
+            <Route path="upload" element={<Upload />} />
+            <Route path="history" element={<History />} />
+            <Route path="profile" element={<UserProfiles />} />
+            <Route path="calendar" element={<Calendar />} />
+            <Route path="blank" element={<Blank />} />
+            <Route path="form-elements" element={<FormElements />} />
+            <Route path="basic-tables" element={<BasicTables />} />
+            <Route path="alerts" element={<Alerts />} />
+            <Route path="avatars" element={<Avatars />} />
+            <Route path="badge" element={<Badges />} />
+            <Route path="buttons" element={<Buttons />} />
+            <Route path="images" element={<Images />} />
+            <Route path="videos" element={<Videos />} />
+            <Route path="line-chart" element={<LineChart />} />
+            <Route path="bar-chart" element={<BarChart />} />
+          </Route>
+
           {/* Dashboard Layout */}
           <Route path="/Expenzoir/" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             <Route index element={<Home />} />
@@ -81,6 +101,8 @@ export default function App() {
           </Route>
 
           {/* Auth Layout */}
+          <Route path="/signin" element={<PublicOnlyRoute><SignIn /></PublicOnlyRoute>} />
+          <Route path="/signup" element={<PublicOnlyRoute><SignUp /></PublicOnlyRoute>} />
           <Route path="/Expenzoir/signin" element={<PublicOnlyRoute><SignIn /></PublicOnlyRoute>} />
           <Route path="/Expenzoir/signup" element={<PublicOnlyRoute><SignUp /></PublicOnlyRoute>} />
 
