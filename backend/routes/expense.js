@@ -1,12 +1,35 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const expenseController = require('../controllers/expenseController');
-const auth = require('../middleware/auth');
-const upload = require('../middleware/upload');
 
-router.post('/upload', auth, upload.single('bill'), expenseController.uploadBill);
-router.post('/', auth, expenseController.addExpense);
-router.get('/', auth, expenseController.getExpenses);
-router.delete('/:id', auth, expenseController.deleteExpense);
+const auth = require("../middleware/auth");
+const upload = require("../middleware/upload");
+
+const {
+  uploadBill,
+  addExpense,
+  getExpenses,
+  deleteExpense,
+  getStatement,
+  askAssistant,
+} = require("../controllers/expenseController");
+
+/* ─────────────────────────────
+   MAIN EXPENSE ROUTES (CRUD)
+──────────────────────────── */
+router.post("/upload", auth, upload.single("bill"), uploadBill);
+router.post("/", auth, addExpense);
+router.get("/", auth, getExpenses);
+router.delete("/:id", auth, deleteExpense);
+
+/* ─────────────────────────────
+   BANK-STYLE STATEMENT API
+   (REPLACES ALL REPORT ROUTES)
+──────────────────────────── */
+router.get("/statement", auth, getStatement);
+
+/* -------------------------------------------------------------
+   AI EXPENSE ASSISTANT
+------------------------------------------------------------- */
+router.post("/assistant", auth, askAssistant);
 
 module.exports = router;
