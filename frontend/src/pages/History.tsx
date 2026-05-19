@@ -837,9 +837,9 @@ export default function History() {
                           <p className="text-sm font-semibold text-gray-900 dark:text-white">
                             {expense.shop}
                           </p>
-                          <p className="text-xs text-gray-400 mt-0.5">
+                          {/* <p className="text-xs text-gray-400 mt-0.5">
                             {expense.entryType === "ai_extracted" ? "AI Extracted" : "Manual Entry"}
-                          </p>
+                          </p> */}
                         </div>
                       </TableCell>
 
