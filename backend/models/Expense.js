@@ -19,6 +19,14 @@ const expenseSchema = new mongoose.Schema({
     enum: ['Food', 'Shopping', 'Medical', 'Fuel', 'Bills', 'Other'],
     required: true
   },
+
+  // ADD THIS
+  paymentMethod: {
+    type: String,
+    enum: ['UPI', 'Cash', 'Credit Card', 'Debit Card', 'Wallet', 'Other'],
+    default: 'Other'
+  },
+
   date: {
     type: Date,
     default: Date.now
