@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 import { AuthContext } from "../context/AuthContext";
 import { API_BASE_URL } from "../config/api";
 import PageMeta from "../components/common/PageMeta";
@@ -12,7 +13,7 @@ import {
 } from "../components/ui/table";
 import Badge from "../components/ui/badge/Badge";
 import { GridIcon } from "../icons";
-import { Download, Filter, TrendingUp, Receipt, Wallet, X, FileText, Calendar } from "lucide-react";
+import { Download, Filter, TrendingUp, Receipt, Wallet, X, FileText, Calendar, Trash2 } from "lucide-react";
 
 /* ─────────────────────────────────────────────
    PDF GENERATOR UTILITY
@@ -440,6 +441,7 @@ export default function History() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedMonth, setSelectedMonth] = useState("all");
   const [showReportModal, setShowReportModal] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const authContext = useContext(AuthContext);
   const token = authContext?.token;
@@ -462,6 +464,55 @@ export default function History() {
       } finally {
         setLoading(false);
       }
+    }
+  };
+
+  const handleDeleteExpense = async (expense: any) => {
+    if (!token) return;
+
+    const result = await Swal.fire({
+      title: "Delete expense?",
+      text: `${expense.shop || "This expense"} will be removed from your history.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280",
+    });
+
+    if (!result.isConfirmed) return;
+
+    setDeletingId(expense._id);
+
+    try {
+      await axios.delete(`${API_BASE_URL}/expense/${expense._id}`, {
+        headers: { "x-auth-token": token },
+      });
+
+      setExpenses((prev) => prev.filter((item) => item._id !== expense._id));
+
+      Swal.fire({
+        icon: "success",
+        title: "Deleted",
+        text: "Expense removed successfully.",
+        confirmButtonColor: "#3b82f6",
+      });
+
+      if (filteredExpenses.length === 1 && currentPage > 1) {
+        setCurrentPage((page) => page - 1);
+      } else {
+        fetchExpenses(currentPage);
+      }
+    } catch (err: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Delete failed",
+        text: err.response?.data?.msg || "Could not delete this expense.",
+        confirmButtonColor: "#ef4444",
+      });
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -715,6 +766,14 @@ export default function History() {
                   <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-gray-600 dark:bg-white/10 dark:text-gray-300">
                     {expense.paymentMethod || "Other"}
                   </span>
+                  <button
+                    onClick={() => handleDeleteExpense(expense)}
+                    disabled={deletingId === expense._id}
+                    className="ml-auto inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-600 transition hover:bg-red-100 disabled:opacity-50 dark:bg-red-500/10 dark:text-red-400"
+                  >
+                    <Trash2 className="size-3.5" />
+                    {deletingId === expense._id ? "Deleting" : "Delete"}
+                  </button>
                 </div>
               </div>
             ))
@@ -749,6 +808,9 @@ export default function History() {
                   </TableCell>
                   <TableCell isHeader className="py-3.5 px-6 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Amount
+                  </TableCell>
+                  <TableCell isHeader className="py-3.5 px-6 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    Action
                   </TableCell>
                 </TableRow>
               </TableHeader>
@@ -799,11 +861,21 @@ export default function History() {
                           })}
                         </span>
                       </TableCell>
+                      <TableCell className="py-4 px-6 text-right">
+                        <button
+                          onClick={() => handleDeleteExpense(expense)}
+                          disabled={deletingId === expense._id}
+                          className="inline-flex size-9 items-center justify-center rounded-lg text-red-500 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-50 dark:hover:bg-red-500/10"
+                          aria-label={`Delete ${expense.shop}`}
+                        >
+                          <Trash2 className="size-4" />
+                        </button>
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={5} className="py-16 text-center">
+                    <TableCell colSpan={6} className="py-16 text-center">
                       <p className="text-gray-400 text-sm">
                         {searchTerm || selectedCategory !== "all" || selectedMonth !== "all"
                           ? "No transactions match your filters"
