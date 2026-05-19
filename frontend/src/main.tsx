@@ -12,8 +12,12 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
       <AppWrapper>
-        <App />
-        <Footer/>
+        <div className="flex min-h-screen flex-col">
+          <div className="flex-1">
+            <App />
+          </div>
+          <Footer />
+        </div>
       </AppWrapper>
     </ThemeProvider>
   </StrictMode>

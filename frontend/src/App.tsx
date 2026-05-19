@@ -24,11 +24,28 @@ import Home from "./pages/Dashboard/Home";
 import Upload from "./pages/Upload";
 import History from "./pages/History";
 
+function RouteLoading() {
+  return (
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-slate-50 px-4 dark:bg-gray-950">
+      <div className="flex flex-col items-center gap-4">
+        <img
+          src="/images/logo/logo.png"
+          alt="Expenzoir"
+          className="h-28 w-auto object-contain"
+        />
+        <div className="h-2 w-40 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800">
+          <div className="h-full w-1/2 animate-pulse rounded-full bg-brand-500" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const authContext = useContext(AuthContext);
 
   if (!authContext || authContext.loading) {
-    return null;
+    return <RouteLoading />;
   }
 
   return authContext.token ? children : <Navigate to="/signin" replace />;
@@ -38,7 +55,7 @@ function PublicOnlyRoute({ children }: { children: ReactNode }) {
   const authContext = useContext(AuthContext);
 
   if (!authContext || authContext.loading) {
-    return null;
+    return <RouteLoading />;
   }
 
   return authContext.token ? <Navigate to="/" replace /> : children;
