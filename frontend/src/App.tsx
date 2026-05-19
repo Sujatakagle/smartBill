@@ -50,6 +50,7 @@ export default function App() {
       <Router>
         <ScrollToTop />
         <Routes>
+<<<<<<< HEAD
           {/* Vercel root routes */}
           <Route path="/" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             <Route index element={<Home />} />
@@ -70,6 +71,8 @@ export default function App() {
             <Route path="bar-chart" element={<BarChart />} />
           </Route>
 
+=======
+>>>>>>> 3c63753f807681cadcf3218491ef96754b0a5fb3
           {/* Dashboard Layout */}
           <Route path="/Expenzoir/" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             <Route index element={<Home />} />
@@ -101,8 +104,11 @@ export default function App() {
           </Route>
 
           {/* Auth Layout */}
+<<<<<<< HEAD
           <Route path="/signin" element={<PublicOnlyRoute><SignIn /></PublicOnlyRoute>} />
           <Route path="/signup" element={<PublicOnlyRoute><SignUp /></PublicOnlyRoute>} />
+=======
+>>>>>>> 3c63753f807681cadcf3218491ef96754b0a5fb3
           <Route path="/Expenzoir/signin" element={<PublicOnlyRoute><SignIn /></PublicOnlyRoute>} />
           <Route path="/Expenzoir/signup" element={<PublicOnlyRoute><SignUp /></PublicOnlyRoute>} />
 

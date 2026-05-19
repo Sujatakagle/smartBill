@@ -3,11 +3,38 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { useContext } from "react";
 import type { ReactNode } from "react";
 
+<<<<<<< HEAD
 import { ChevronDownIcon, HorizontaLDots } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import { AuthContext } from "../context/AuthContext";
 import { LayoutDashboard, PlusCircle, History, User, LogOut } from "lucide-react";
 import Swal from "sweetalert2";
+=======
+// Assume these icons are imported from an icon library
+import {
+  BoxCubeIcon,
+  CalenderIcon,
+  ChevronDownIcon,
+  GridIcon,
+  HorizontaLDots,
+  ListIcon,
+  PageIcon,
+  PieChartIcon,
+  PlugInIcon,
+  TableIcon,
+  UserCircleIcon,
+} from "../icons";
+import { useSidebar } from "../context/SidebarContext";
+import { AuthContext } from "../context/AuthContext";
+import { 
+  LayoutDashboard, 
+  PlusCircle, 
+  History, 
+  User, 
+  LogOut,
+  Wallet
+} from "lucide-react";
+>>>>>>> 3c63753f807681cadcf3218491ef96754b0a5fb3
 
 type NavItem = {
   name: string;
@@ -50,6 +77,7 @@ const AppSidebar: React.FC = () => {
     {
       icon: <LogOut size={20} />,
       name: "Logout",
+<<<<<<< HEAD
       onClick: async () => {
         const result = await Swal.fire({
           title: "Log out?",
@@ -66,6 +94,11 @@ const AppSidebar: React.FC = () => {
           authContext?.logout();
           navigate("/Expenzoir/signin");
         }
+=======
+      onClick: () => {
+        authContext?.logout();
+        navigate("/Expenzoir/signin");
+>>>>>>> 3c63753f807681cadcf3218491ef96754b0a5fb3
       },
     },
   ];
@@ -260,6 +293,7 @@ const AppSidebar: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
+<<<<<<< HEAD
         className={`-mx-3 flex justify-center overflow-hidden ${
           isExpanded || isHovered || isMobileOpen ? "h-24" : "h-16"
         }`}
@@ -276,6 +310,20 @@ const AppSidebar: React.FC = () => {
           />
           {(isExpanded || isHovered || isMobileOpen) && (
             <span className="sr-only">Expenzoir</span>
+=======
+        className={`py-8 flex ${
+          !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+        }`}
+      >
+        <Link to="/Expenzoir/" className="flex items-center gap-3">
+          <div className="p-2 bg-brand-500 rounded-xl text-white shadow-lg shadow-brand-200">
+            <Wallet size={24} />
+          </div>
+          {(isExpanded || isHovered || isMobileOpen) && (
+            <span className="font-black text-xl tracking-tighter text-gray-900 dark:text-white uppercase">
+              Expenzoir
+            </span>
+>>>>>>> 3c63753f807681cadcf3218491ef96754b0a5fb3
           )}
         </Link>
       </div>
