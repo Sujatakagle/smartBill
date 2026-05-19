@@ -28,6 +28,14 @@ export default function Upload() {
   const navigate = useNavigate();
   const token = authContext?.token;
 
+  const normalizeExtractedData = (data: any) => ({
+    shop: data?.shop || "Unknown Merchant",
+    amount: Number(data?.amount) || 0,
+    category: data?.category || "Other",
+    paymentMethod: data?.paymentMethod || "Other",
+    date: data?.date || new Date().toISOString().split("T")[0],
+  });
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
 
@@ -61,7 +69,7 @@ export default function Upload() {
         }
       );
 
-      setExtractedData(res.data);
+      setExtractedData(normalizeExtractedData(res.data));
 
       Swal.fire({
         icon: "success",
@@ -99,7 +107,7 @@ export default function Upload() {
     try {
       await axios.post(
         `${API_BASE_URL}/expense`,
-        extractedData,
+        normalizeExtractedData(extractedData),
         {
           headers: {
             "x-auth-token": token,

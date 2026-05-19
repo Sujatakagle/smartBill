@@ -13,6 +13,24 @@ const getWorkingModel = () => {
   return modelsToTry;
 };
 
+const normalizeBillData = (data = {}) => {
+  const validCategories = ['Food', 'Shopping', 'Medical', 'Fuel', 'Bills', 'Other'];
+  const validPaymentMethods = ['UPI', 'Cash', 'Credit Card', 'Debit Card', 'Wallet', 'Other'];
+  const amount = Number(data.amount);
+
+  return {
+    shop: typeof data.shop === 'string' && data.shop.trim()
+      ? data.shop.trim()
+      : 'Unknown Merchant',
+    amount: Number.isFinite(amount) ? amount : 0,
+    date: data.date || null,
+    category: validCategories.includes(data.category) ? data.category : 'Other',
+    paymentMethod: validPaymentMethods.includes(data.paymentMethod)
+      ? data.paymentMethod
+      : 'Other',
+  };
+};
+
 const extractBillData = async (imageBuffer, mimeType) => {
   const modelsToTry = getWorkingModel();
 
@@ -64,6 +82,11 @@ IMPORTANT RULES:
 - Bills
 - Other
 
+5. Never return null for shop, category, or paymentMethod.
+   If shop is not visible, use "Unknown Merchant".
+   If payment method is not visible, use "Other".
+   If category is unclear, use "Other".
+
 Return ONLY valid JSON.
 No markdown.
 No explanation.
@@ -81,7 +104,7 @@ No extra text.
       const text = result.response.text();
       const cleaned = text.replace(/```json|```/g, '').trim();
       console.log(`Success with model: ${modelName}`);
-      return JSON.parse(cleaned);
+      return normalizeBillData(JSON.parse(cleaned));
 
     } catch (error) {
       console.error(`Model ${modelName} failed:`, error.message);

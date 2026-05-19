@@ -70,7 +70,25 @@ exports.uploadBill = async (req, res) => {
 ──────────────────────────────────────────── */
 exports.addExpense = async (req, res) => {
   try {
-    const { shop, amount, category, paymentMethod, date } = req.body;
+    const validCategories = ['Food', 'Shopping', 'Medical', 'Fuel', 'Bills', 'Other'];
+    const validPaymentMethods = ['UPI', 'Cash', 'Credit Card', 'Debit Card', 'Wallet', 'Other'];
+    const parsedAmount = Number(req.body.amount);
+    const shop =
+      typeof req.body.shop === "string" && req.body.shop.trim()
+        ? req.body.shop.trim()
+        : "Unknown Merchant";
+    const amount = Number.isFinite(parsedAmount) ? parsedAmount : 0;
+    const category = validCategories.includes(req.body.category)
+      ? req.body.category
+      : "Other";
+    const paymentMethod = validPaymentMethods.includes(req.body.paymentMethod)
+      ? req.body.paymentMethod
+      : "Other";
+    const date = req.body.date ? new Date(req.body.date) : new Date();
+
+    if (amount <= 0) {
+      return res.status(400).json({ msg: "Valid amount is required" });
+    }
 
     const existingExpense = await Expense.findOne({
       userId: req.user.id,
@@ -98,7 +116,7 @@ exports.addExpense = async (req, res) => {
     res.json(saved);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server error");
+    res.status(500).json({ msg: err.message || "Server error" });
   }
 };
 
