@@ -139,7 +139,7 @@ export default function StatisticsChart({ data }: StatisticsChartProps) {
     <div className="flex h-full w-full min-w-0 flex-col rounded-xl border border-gray-200 bg-white px-4 pb-4 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div className="mb-4 flex flex-col gap-5 sm:mb-6 sm:flex-row sm:justify-between">
         <div className="w-full">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+              <h3 className="text-[11px] font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide sm:text-sm">
             Spending Trends
           </h3>
           <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">

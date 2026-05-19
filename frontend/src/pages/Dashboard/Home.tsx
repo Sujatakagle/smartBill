@@ -9,6 +9,7 @@ import StatisticsChart from "../../components/ecommerce/StatisticsChart";
 import PageMeta from "../../components/common/PageMeta";
 import RecentTransactions from "../../components/smart/RecentTransactions";
 import { API_BASE_URL } from "../../config/api";
+
 export default function Home() {
   const [expenses, setExpenses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,19 +17,14 @@ export default function Home() {
   const authContext = useContext(AuthContext);
   const token = authContext?.token;
 
-  // ✅ SAFE API FETCH
   useEffect(() => {
     const fetchExpenses = async () => {
       if (!token) return;
-
       try {
         const res = await axios.get(`${API_BASE_URL}/expense`, {
           headers: { "x-auth-token": token },
         });
-
         const data = res.data;
-
-        // ✅ Normalize API response safely
         const expensesArray = Array.isArray(data)
           ? data
           : Array.isArray(data?.expenses)
@@ -36,7 +32,6 @@ export default function Home() {
           : Array.isArray(data?.data)
           ? data.data
           : [];
-
         setExpenses(expensesArray);
       } catch (err) {
         console.error("Failed to fetch expenses", err);
@@ -45,19 +40,15 @@ export default function Home() {
         setLoading(false);
       }
     };
-
     fetchExpenses();
   }, [token]);
 
-  // ✅ SAFE CALCULATIONS
   const totalSpent = Array.isArray(expenses)
     ? expenses.reduce((sum, exp) => sum + (exp.amount || 0), 0)
     : 0;
 
-  const avgBill =
-    expenses.length > 0 ? totalSpent / expenses.length : 0;
+  const avgBill = expenses.length > 0 ? totalSpent / expenses.length : 0;
 
-  // CATEGORY DATA
   const categoryCounts = Array.isArray(expenses)
     ? expenses.reduce((acc: any, exp) => {
         const key = exp.category || "Other";
@@ -70,7 +61,6 @@ export default function Home() {
     Object.entries(categoryCounts).sort((a: any, b: any) => b[1] - a[1])[0]?.[0] ||
     "N/A";
 
-  // MONTHLY DATA
   const currentYear = new Date().getFullYear();
   const monthlyData = Array(12).fill(0);
 
@@ -108,8 +98,9 @@ export default function Home() {
             ))}
           </div>
           <div className="grid grid-cols-12 gap-4 md:gap-6">
-            <div className="col-span-12 h-80 animate-pulse rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] lg:col-span-8" />
-            <div className="col-span-12 h-80 animate-pulse rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] lg:col-span-4" />
+            <div className="col-span-12 h-[420px] animate-pulse rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] lg:col-span-4" />
+            <div className="col-span-12 h-[420px] animate-pulse rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] lg:col-span-4" />
+            <div className="col-span-12 h-[420px] animate-pulse rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] lg:col-span-4" />
             <div className="col-span-12 h-80 animate-pulse rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]" />
           </div>
         </div>
@@ -125,6 +116,8 @@ export default function Home() {
       />
 
       <div className="min-h-[calc(100vh-8rem)] grid grid-cols-12 gap-4 md:gap-6">
+
+        {/* HEADER */}
         <div className="col-span-12">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Welcome to Expenzoir
@@ -135,7 +128,7 @@ export default function Home() {
         </div>
 
         {/* METRICS */}
-        <div className="col-span-12 space-y-6">
+        <div className="col-span-12">
           <SmartMetrics
             totalSpent={totalSpent}
             avgBill={avgBill}
@@ -144,37 +137,29 @@ export default function Home() {
           />
         </div>
 
-        {/* RECENT TRANSACTIONS */}
+        {/* ROW: Spending Trends + Category Breakdown + Payment Intelligence */}
+        <div className="col-span-12 lg:col-span-4 min-w-0 h-[420px]">
+                    <RecentTransactions expenses={expenses} />
 
-    {/* MAIN CHART (BIGGER) */}
-<div className="col-span-12 flex min-w-0 lg:col-span-8">
-  <StatisticsChart data={monthlyData} />
-</div>
+        </div>
 
-{/* SIDE CHART (SMALLER) */}
-<div className="col-span-12 flex min-w-0 lg:col-span-4">
-  <CategoryBreakdown
-    categoryCounts={categoryCounts}
-    totalSpent={totalSpent}
-  />
-</div>{/* ROW: TRANSACTIONS + PAYMENT INTELLIGENCE */}
-<div className="col-span-12 flex min-w-0 flex-col items-stretch gap-4 lg:flex-row lg:gap-6">
+        <div className="col-span-12 lg:col-span-4 min-w-0 h-[420px]">
+          <CategoryBreakdown
+            categoryCounts={categoryCounts}
+            totalSpent={totalSpent}
+          />
+        </div>
 
-  {/* LEFT - Recent Transactions */}
-  <div className="flex w-full min-w-0 lg:w-1/2">
-    <div className="w-full h-full">
-      <RecentTransactions expenses={expenses} />
-    </div>
-  </div>
+        <div className="col-span-12 lg:col-span-4 min-w-0 h-[420px]">
+          <PaymentMethodChart expenses={expenses} />
+        </div>
 
-  {/* RIGHT - Payment Intelligence */}
-  <div className="flex w-full min-w-0 lg:w-1/2">
-    <div className="w-full h-full">
-      <PaymentMethodChart expenses={expenses} />
-    </div>
-  </div>
+        {/* RECENT TRANSACTIONS - FULL WIDTH */}
+        <div className="col-span-12">
+                    <StatisticsChart data={monthlyData} />
 
-</div>
+        </div>
+
       </div>
     </>
   );

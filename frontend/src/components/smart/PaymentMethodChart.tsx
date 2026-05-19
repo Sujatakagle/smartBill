@@ -53,9 +53,9 @@ export default function PaymentMethodIntelligence({ expenses }: Props) {
 
       {/* HEADER */}
       <div className="mb-4">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              <h3 className="text-[11px] font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide sm:text-sm">
           Payment Intelligence
-        </h2>
+        </h3>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           Spending by payment method
         </p>
