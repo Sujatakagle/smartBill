@@ -104,12 +104,15 @@ export default function Home() {
         {/* HEADER (FIXED MOBILE BUTTON) */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
-          <div>
-            <h1 className="text-2xl font-bold">Welcome</h1>
-            <p className="text-gray-500 text-sm">
-              Expense tracking dashboard
-            </p>
-          </div>
+         <div>
+  <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
+    Welcome 
+  </h1>
+
+  <p className="mt-1 text-base sm:text-lg text-gray-600 dark:text-gray-400">
+    Track your expenses, insights, and spending patterns in one place
+  </p>
+</div>
 
           {/* BUTTON FIXED */}
           <div className="flex sm:justify-end">
