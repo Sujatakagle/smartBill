@@ -88,7 +88,6 @@ export default function Home() {
     if (d) monthlyData[d.getMonth()] += e.amount || 0;
   });
 
-  /* ---------------- LOADING UI ---------------- */
   if (loading) {
     return (
       <>
@@ -101,7 +100,6 @@ export default function Home() {
     );
   }
 
-  /* ---------------- MAIN UI ---------------- */
   return (
     <>
       <PageMeta title="Dashboard" description="Expenzoir Dashboard" />
@@ -115,27 +113,24 @@ export default function Home() {
         {/* HEADER */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
-          {/* LEFT TEXT */}
           <div>
-           <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
-  Welcome
-</h1>
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
+              Welcome
+            </h1>
 
             <p className="mt-1 text-base sm:text-lg text-gray-600 dark:text-gray-400">
               Track your expenses, insights, and spending.
             </p>
           </div>
 
-          {/* RIGHT BUTTON (FIXED MOBILE SIZE + RIGHT ALIGN) */}
-          <div className="flex justify-end sm:justify-end">
+          {/* HIDDEN ON MOBILE */}
+          <div className="hidden sm:flex justify-end">
             <button
               onClick={() => setShowReportModal(true)}
               className="
                 inline-flex items-center gap-1.5
-                px-2.5 py-1.5
-                sm:px-4 sm:py-2
-                text-xs sm:text-sm
-                font-medium
+                px-4 py-2
+                text-sm font-medium
                 bg-blue-600 text-white
                 rounded-md
                 whitespace-nowrap
@@ -144,14 +139,13 @@ export default function Home() {
                 transition
               "
             >
-              <FileText className="size-3.5 sm:size-4" />
-             Download Report
+              <FileText className="size-4" />
+              Download Report
             </button>
           </div>
 
         </div>
 
-        {/* METRICS */}
         <SmartMetrics
           totalSpent={totalSpent}
           avgBill={0}
@@ -161,9 +155,7 @@ export default function Home() {
           thisMonthSpend={thisMonthSpend}
         />
 
-        {/* INSIGHTS GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-
           <div className="min-w-0 flex flex-col overflow-hidden">
             <DailyInsights expenses={expenses} />
           </div>
@@ -178,12 +170,9 @@ export default function Home() {
           <div className="min-w-0 flex flex-col overflow-hidden">
             <PaymentMethodChart expenses={expenses} />
           </div>
-
         </div>
 
-        {/* TABLE GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-
           <div className="min-w-0 flex flex-col overflow-hidden">
             <TopMerchants expenses={expenses} />
           </div>
@@ -191,10 +180,8 @@ export default function Home() {
           <div className="min-w-0 flex flex-col overflow-hidden">
             <RecentTransactions expenses={expenses} />
           </div>
-
         </div>
 
-        {/* CHART */}
         <div className="w-full min-w-0 flex flex-col overflow-hidden">
           <StatisticsChart data={monthlyData} />
         </div>
