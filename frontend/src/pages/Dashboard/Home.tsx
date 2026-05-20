@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
+import { FileText } from "lucide-react";
+import { ReportModal } from "../History";
 
 import SmartMetrics from "../../components/smart/SmartMetrics";
 import PaymentMethodChart from "../../components/smart/PaymentMethodChart";
@@ -8,11 +10,14 @@ import CategoryBreakdown from "../../components/smart/CategoryBreakdown";
 import StatisticsChart from "../../components/ecommerce/StatisticsChart";
 import PageMeta from "../../components/common/PageMeta";
 import RecentTransactions from "../../components/smart/RecentTransactions";
+import TopMerchants from "../../components/smart/TopMerchants";
+import DailyInsights from "../../components/smart/DailyInsights";
 import { API_BASE_URL } from "../../config/api";
 
 export default function Home() {
   const [expenses, setExpenses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   const authContext = useContext(AuthContext);
   const token = authContext?.token;
@@ -60,6 +65,21 @@ export default function Home() {
   const topCategory =
     Object.entries(categoryCounts).sort((a: any, b: any) => b[1] - a[1])[0]?.[0] ||
     "N/A";
+
+  const highestExpense = Array.isArray(expenses)
+    ? Math.max(...expenses.map((e) => e.amount || 0), 0)
+    : 0;
+
+  const now = new Date();
+  const thisMonthSpend = Array.isArray(expenses)
+    ? expenses.reduce((sum, exp) => {
+        const d = exp.date ? new Date(exp.date) : null;
+        if (d && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
+          return sum + (exp.amount || 0);
+        }
+        return sum;
+      }, 0)
+    : 0;
 
   const currentYear = new Date().getFullYear();
   const monthlyData = Array(12).fill(0);
@@ -115,16 +135,31 @@ export default function Home() {
         description="Expenzoir Expense Dashboard"
       />
 
+      {showReportModal && token && (
+        <ReportModal token={token} onClose={() => setShowReportModal(false)} />
+      )}
+
       <div className="min-h-[calc(100vh-8rem)] grid grid-cols-12 gap-4 md:gap-6">
 
         {/* HEADER */}
-        <div className="col-span-12">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Welcome to Expenzoir
-          </h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Track your spending, receipts, and payment insights in one place.
-          </p>
+        <div className="col-span-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Welcome to Expenzoir
+            </h1>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Track your spending, receipts, and payment insights in one place.
+            </p>
+          </div>
+          <div>
+            <button
+              onClick={() => setShowReportModal(true)}
+              className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition shadow-sm shadow-blue-200 dark:shadow-none"
+            >
+              <FileText className="size-4" />
+              Download Report
+            </button>
+          </div>
         </div>
 
         {/* METRICS */}
@@ -134,12 +169,15 @@ export default function Home() {
             avgBill={avgBill}
             totalReceipts={expenses.length}
             topCategory={topCategory}
+            highestExpense={highestExpense}
+            thisMonthSpend={thisMonthSpend}
           />
         </div>
 
         {/* ROW: Spending Trends + Category Breakdown + Payment Intelligence */}
         <div className="col-span-12 lg:col-span-4 min-w-0 h-[420px]">
-                    <RecentTransactions expenses={expenses} />
+                    <DailyInsights expenses={expenses} />
+
 
         </div>
 
@@ -152,6 +190,15 @@ export default function Home() {
 
         <div className="col-span-12 lg:col-span-4 min-w-0 h-[420px]">
           <PaymentMethodChart expenses={expenses} />
+        </div>
+
+        {/* ROW: Top Merchants + Daily Insights */}
+        <div className="col-span-12 lg:col-span-6 min-w-0 h-[420px]">
+          <TopMerchants expenses={expenses} />
+        </div>
+
+        <div className="col-span-12 lg:col-span-6 min-w-0 h-[420px]">
+          <RecentTransactions expenses={expenses} />
         </div>
 
         {/* RECENT TRANSACTIONS - FULL WIDTH */}
