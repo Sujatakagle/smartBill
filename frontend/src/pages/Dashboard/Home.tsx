@@ -88,8 +88,20 @@ export default function Home() {
     if (d) monthlyData[d.getMonth()] += e.amount || 0;
   });
 
-  if (loading) return <div className="p-6">Loading...</div>;
+  /* ---------------- LOADING UI ---------------- */
+  if (loading) {
+    return (
+      <>
+        <PageMeta title="Dashboard" description="Expenzoir Dashboard" />
 
+        <div className="min-h-screen w-full space-y-6 animate-pulse">
+          <div className="h-10 w-full bg-gray-200 rounded" />
+        </div>
+      </>
+    );
+  }
+
+  /* ---------------- MAIN UI ---------------- */
   return (
     <>
       <PageMeta title="Dashboard" description="Expenzoir Dashboard" />
@@ -98,41 +110,42 @@ export default function Home() {
         <ReportModal token={token} onClose={() => setShowReportModal(false)} />
       )}
 
-      {/* ROOT WRAPPER */}
       <div className="flex flex-col gap-6 min-h-screen w-full overflow-x-hidden">
 
-        {/* HEADER (FIXED MOBILE BUTTON) */}
+        {/* HEADER */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
-         <div>
-  <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-    Welcome 
-  </h1>
+          {/* LEFT TEXT */}
+          <div>
+           <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
+  Welcome
+</h1>
 
-  <p className="mt-1 text-base sm:text-lg text-gray-600 dark:text-gray-400">
-    Track your expenses, insights, and spending patterns in one place
-  </p>
-</div>
+            <p className="mt-1 text-base sm:text-lg text-gray-600 dark:text-gray-400">
+              Track your expenses, insights, and spending.
+            </p>
+          </div>
 
-          {/* BUTTON FIXED */}
-          <div className="flex sm:justify-end">
+          {/* RIGHT BUTTON (FIXED MOBILE SIZE + RIGHT ALIGN) */}
+          <div className="flex justify-end sm:justify-end">
             <button
               onClick={() => setShowReportModal(true)}
               className="
-                inline-flex items-center gap-2
-                w-auto
-                px-3 py-2 sm:px-4 sm:py-2
-                text-sm font-medium
+                inline-flex items-center gap-1.5
+                px-2.5 py-1.5
+                sm:px-4 sm:py-2
+                text-xs sm:text-sm
+                font-medium
                 bg-blue-600 text-white
-                rounded-lg
+                rounded-md
                 whitespace-nowrap
                 shadow-sm
                 hover:bg-blue-700
                 transition
               "
             >
-              <FileText className="size-4" />
-              Download Report
+              <FileText className="size-3.5 sm:size-4" />
+             Download Report
             </button>
           </div>
 
@@ -181,7 +194,7 @@ export default function Home() {
 
         </div>
 
-        {/* CHART SECTION */}
+        {/* CHART */}
         <div className="w-full min-w-0 flex flex-col overflow-hidden">
           <StatisticsChart data={monthlyData} />
         </div>
