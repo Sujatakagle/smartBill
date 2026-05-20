@@ -8,6 +8,7 @@ const {
   uploadBill,
   addExpense,
   getExpenses,
+  getDashboard,
   deleteExpense,
   getStatement,
   askAssistant,
@@ -18,6 +19,7 @@ const {
 ──────────────────────────── */
 router.post("/upload", auth, upload.single("bill"), uploadBill);
 router.post("/", auth, addExpense);
+router.get("/dashboard", auth, getDashboard);
 router.get("/", auth, getExpenses);
 router.delete("/:id", auth, deleteExpense);
 

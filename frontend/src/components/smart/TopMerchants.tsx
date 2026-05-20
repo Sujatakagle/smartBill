@@ -60,7 +60,11 @@ export default function TopMerchants({ expenses }: Props) {
     tooltip: {
       theme: "dark",
       y: {
-        formatter: (val) => `₹${val.toLocaleString("en-IN")}`,
+        formatter: (val) =>
+          `₹${Number(val || 0).toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`,
       },
     },
     plotOptions: {
@@ -112,7 +116,10 @@ export default function TopMerchants({ expenses }: Props) {
                     </span>
                   </div>
                   <span className="text-sm font-bold text-gray-900 dark:text-white tabular-nums">
-                    ₹{Math.floor(m.amount).toLocaleString("en-IN")}
+                    ₹{m.amount.toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </span>
                 </div>
               ))}

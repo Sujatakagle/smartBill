@@ -13,7 +13,7 @@ import {
 } from "../components/ui/table";
 import Badge from "../components/ui/badge/Badge";
 import { GridIcon } from "../icons";
-import { Download, Filter, TrendingUp, Receipt, Wallet, X, FileText, Calendar, Trash2 } from "lucide-react";
+import { Download, Filter, TrendingUp, Receipt, Wallet, X, FileText, Calendar, Trash2, CreditCard } from "lucide-react";
 
 /* ─────────────────────────────────────────────
    PDF GENERATOR UTILITY
@@ -565,7 +565,17 @@ export default function History() {
   });
 
   const totalSpent = filteredExpenses.reduce((sum, e) => sum + e.amount, 0);
-  const avgAmount = filteredExpenses.length > 0 ? totalSpent / filteredExpenses.length : 0;
+  const highestExpense = filteredExpenses.reduce(
+    (max, expense) => Math.max(max, Number(expense.amount) || 0),
+    0
+  );
+  const paymentTotals = filteredExpenses.reduce((acc: Record<string, number>, expense) => {
+    const method = expense.paymentMethod || "Other";
+    acc[method] = (acc[method] || 0) + (Number(expense.amount) || 0);
+    return acc;
+  }, {});
+  const topPaymentMethod =
+    Object.entries(paymentTotals).sort((a, b) => b[1] - a[1])[0]?.[0] || "N/A";
 
   const categoryColors: Record<string, any> = {
     Food: "primary",
@@ -645,7 +655,7 @@ export default function History() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-3 py-4 sm:px-5">
           <div className="flex items-center gap-2 mb-2">
             <Wallet className="size-4 text-blue-500" />
@@ -660,12 +670,23 @@ export default function History() {
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-3 py-4 sm:px-5">
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp className="size-4 text-emerald-500" />
-            <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide sm:text-xs">Average</span>
+            <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide sm:text-xs">Highest Paid</span>
           </div>
           <p className="break-words text-base font-bold text-gray-900 dark:text-white sm:text-xl">
-            ₹{avgAmount.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            ₹{highestExpense.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
-          <p className="mt-0.5 text-xs text-gray-400 sm:text-md">per transaction</p>
+          <p className="mt-0.5 text-xs text-gray-400 sm:text-md">largest bill</p>
+        </div>
+
+        <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-3 py-4 sm:px-5">
+          <div className="flex items-center gap-2 mb-2">
+            <CreditCard className="size-4 text-purple-500" />
+            <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide sm:text-xs">Top Payment</span>
+          </div>
+          <p className="break-words text-base font-bold text-gray-900 dark:text-white sm:text-xl">
+            {topPaymentMethod}
+          </p>
+          <p className="mt-0.5 text-xs text-gray-400 sm:text-md">highest spend method</p>
         </div>
 
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-3 py-4 sm:px-5">

@@ -16,6 +16,9 @@ import { API_BASE_URL } from "../../config/api";
 
 export default function Home() {
   const [expenses, setExpenses] = useState<any[]>([]);
+  const [dashboard, setDashboard] = useState<any>(null);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [showReportModal, setShowReportModal] = useState(false);
 
@@ -23,70 +26,91 @@ export default function Home() {
   const token = authContext?.token;
 
   useEffect(() => {
-    const fetchExpenses = async () => {
+    const fetchDashboard = async () => {
       if (!token) return;
 
       try {
-        const res = await axios.get(`${API_BASE_URL}/expense`, {
+        const res = await axios.get(`${API_BASE_URL}/expense/dashboard`, {
           headers: { "x-auth-token": token },
+          params: {
+            year: selectedYear,
+            ...(selectedMonth ? { month: selectedMonth } : {}),
+          },
         });
 
         const data = res.data;
 
-        const expensesArray = Array.isArray(data)
-          ? data
-          : Array.isArray(data?.expenses)
-          ? data.expenses
-          : Array.isArray(data?.data)
-          ? data.data
-          : [];
+        const expensesArray = Array.isArray(data?.expenses) ? data.expenses : [];
 
+        setDashboard(data);
         setExpenses(expensesArray);
       } catch (err) {
         console.error(err);
+        setDashboard(null);
         setExpenses([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchExpenses();
-  }, [token]);
+    fetchDashboard();
+  }, [token, selectedYear, selectedMonth]);
 
-  const totalSpent = expenses.reduce((s, e) => s + (e.amount || 0), 0);
+  const summary = dashboard?.summary || {};
+  const breakdown = dashboard?.breakdown || {};
+  const yearly = dashboard?.yearly || {};
+  const weekly = dashboard?.weekly || {};
+  const trend = dashboard?.trend || {};
+  const totalSpent =
+    typeof summary.totalSpent === "number"
+      ? summary.totalSpent
+      : expenses.reduce((s, e) => s + (e.amount || 0), 0);
 
-  const categoryCounts = expenses.reduce((acc: any, e) => {
-    const key = e.category || "Other";
-    acc[key] = (acc[key] || 0) + (e.amount || 0);
-    return acc;
-  }, {});
+  const categoryCounts =
+    breakdown.categoryCounts ||
+    expenses.reduce((acc: any, e) => {
+      const key = e.category || "Other";
+      acc[key] = (acc[key] || 0) + (e.amount || 0);
+      return acc;
+    }, {});
 
   const topCategory =
+    summary.topCategory ||
     Object.entries(categoryCounts).sort((a: any, b: any) => b[1] - a[1])[0]?.[0] ||
     "N/A";
 
-  const highestExpense = Math.max(...expenses.map((e) => e.amount || 0), 0);
-
-  const now = new Date();
-
-  const thisMonthSpend = expenses.reduce((s, e) => {
-    const d = e.date ? new Date(e.date) : null;
-    if (
-      d &&
-      d.getMonth() === now.getMonth() &&
-      d.getFullYear() === now.getFullYear()
-    ) {
-      return s + (e.amount || 0);
-    }
-    return s;
-  }, 0);
-
-  const monthlyData = Array(12).fill(0);
-
-  expenses.forEach((e) => {
-    const d = e.date ? new Date(e.date) : null;
-    if (d) monthlyData[d.getMonth()] += e.amount || 0;
-  });
+  const highestExpense =
+    typeof summary.highestExpense === "number"
+      ? summary.highestExpense
+      : Math.max(...expenses.map((e) => e.amount || 0), 0);
+  const thisMonthSpend =
+    typeof summary.thisMonthSpend === "number" ? summary.thisMonthSpend : 0;
+  const monthlyData = Array.isArray(yearly.monthlyData)
+    ? yearly.monthlyData
+    : Array(12).fill(0);
+  const trendData = Array.isArray(trend.data) ? trend.data : monthlyData;
+  const trendCategories = Array.isArray(trend.categories)
+    ? trend.categories
+    : [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+  const availableYears = Array.isArray(yearly.availableYears)
+    ? yearly.availableYears
+    : [selectedYear];
+  const recentExpenses = Array.isArray(dashboard?.recentExpenses)
+    ? dashboard.recentExpenses
+    : expenses.slice(0, 5);
 
   if (loading) {
     return (
@@ -148,8 +172,8 @@ export default function Home() {
 
         <SmartMetrics
           totalSpent={totalSpent}
-          avgBill={0}
-          totalReceipts={expenses.length}
+          avgBill={summary.avgBill || 0}
+          totalReceipts={summary.transactionCount || expenses.length}
           topCategory={topCategory}
           highestExpense={highestExpense}
           thisMonthSpend={thisMonthSpend}
@@ -178,16 +202,25 @@ export default function Home() {
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
   <div className="min-w-0 flex flex-col overflow-hidden lg:col-span-2">
-                                   <DailyInsights expenses={expenses} />
+                                   <DailyInsights expenses={expenses} dailyTotals={weekly.dailyTotals} weekStart={weekly.startDate} weekEnd={weekly.endDate} />
   </div>
 
   <div className="min-w-0 flex flex-col overflow-hidden lg:col-span-3">
-    <RecentTransactions expenses={expenses} />
+    <RecentTransactions expenses={recentExpenses} />
   </div>
 </div>
 
         <div className="w-full min-w-0 flex flex-col overflow-hidden">
-          <StatisticsChart data={monthlyData} />
+          <StatisticsChart
+            data={trendData}
+            categories={trendCategories}
+            selectedYear={selectedYear}
+            selectedMonth={selectedMonth}
+            availableYears={availableYears}
+            onYearChange={setSelectedYear}
+            onMonthChange={setSelectedMonth}
+            subtitle={trend.title || "Monthly overview"}
+          />
         </div>
 
       </div>

@@ -2,21 +2,55 @@ import React from "react";
 
 interface Props {
   expenses: any[];
+  dailyTotals?: number[];
+  weekStart?: string;
+  weekEnd?: string;
 }
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-export default function DailyInsights({ expenses }: Props) {
-  const dailyTotals = Array(7).fill(0);
+export default function DailyInsights({
+  expenses,
+  dailyTotals: weeklyDailyTotals,
+  weekStart,
+  weekEnd,
+}: Props) {
+  const dailyTotals = Array.isArray(weeklyDailyTotals)
+    ? weeklyDailyTotals
+    : Array(7).fill(0);
 
-  (expenses || []).forEach((exp) => {
-    if (exp.date) {
-      const day = new Date(exp.date).getDay();
-      dailyTotals[day] += exp.amount || 0;
-    }
-  });
+  if (!Array.isArray(weeklyDailyTotals)) {
+    const now = new Date();
+    const startOfWeek = new Date(now);
+    startOfWeek.setHours(0, 0, 0, 0);
+    startOfWeek.setDate(now.getDate() - now.getDay());
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    endOfWeek.setHours(23, 59, 59, 999);
+
+    (expenses || []).forEach((exp) => {
+      if (exp.date) {
+        const date = new Date(exp.date);
+        if (date >= startOfWeek && date <= endOfWeek) {
+          const day = date.getDay();
+          dailyTotals[day] += exp.amount || 0;
+        }
+      }
+    });
+  }
 
   const maxVal = Math.max(...dailyTotals, 1);
+  const dateRange =
+    weekStart && weekEnd
+      ? `${new Date(weekStart).toLocaleDateString("en-IN", {
+          day: "numeric",
+          month: "short",
+        })} - ${new Date(weekEnd).toLocaleDateString("en-IN", {
+          day: "numeric",
+          month: "short",
+        })}`
+      : "Current week";
 
   return (
     <div className="flex h-[420px] flex-col rounded-xl border border-gray-200 bg-white px-4 py-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-5">
@@ -28,7 +62,7 @@ export default function DailyInsights({ expenses }: Props) {
         </h3>
 
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Daily breakdown of expenses
+          Daily breakdown for {dateRange}
         </p>
       </div>
 

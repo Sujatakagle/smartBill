@@ -14,6 +14,31 @@ const sortGroup = (group) =>
     .sort((a, b) => b[1] - a[1])
     .map(([name, amount]) => ({ name, amount }));
 
+const startOfLocalDay = (date) => {
+  const value = new Date(date);
+  value.setHours(0, 0, 0, 0);
+  return value;
+};
+
+const endOfLocalDay = (date) => {
+  const value = new Date(date);
+  value.setHours(23, 59, 59, 999);
+  return value;
+};
+
+const getWeekRange = (date = new Date()) => {
+  const start = startOfLocalDay(date);
+  start.setDate(start.getDate() - start.getDay());
+
+  const end = endOfLocalDay(start);
+  end.setDate(start.getDate() + 6);
+
+  return { start, end };
+};
+
+const isValidDate = (date) =>
+  date instanceof Date && !Number.isNaN(date.getTime());
+
 const buildAssistantSummary = (expenses) => {
   const byCategory = {};
   const byPaymentMethod = {};
@@ -169,6 +194,160 @@ exports.getExpenses = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
+  }
+};
+
+exports.getDashboard = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const now = new Date();
+    const requestedYear = Number(req.query.year);
+    const trendYear = Number.isInteger(requestedYear)
+      ? requestedYear
+      : now.getFullYear();
+    const requestedMonth = Number(req.query.month);
+    const trendMonth =
+      Number.isInteger(requestedMonth) && requestedMonth >= 1 && requestedMonth <= 12
+        ? requestedMonth
+        : null;
+    const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const nextCurrentMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const { start: weekStart, end: weekEnd } = getWeekRange(now);
+
+    const allExpenses = await Expense.find({ userId })
+      .sort({ date: -1, _id: -1 })
+      .lean();
+
+    const datedExpenses = allExpenses
+      .map((expense) => ({
+        ...expense,
+        parsedDate: expense.date ? new Date(expense.date) : null,
+      }))
+      .filter((expense) => isValidDate(expense.parsedDate));
+
+    const dashboardExpenses = datedExpenses.filter(
+      (expense) =>
+        expense.parsedDate >= currentMonthStart &&
+        expense.parsedDate < nextCurrentMonthStart
+    );
+
+    const totalSpent = moneyTotal(dashboardExpenses);
+    const categoryCounts = {};
+    const paymentMethodTotals = {};
+    const merchantTotals = {};
+    const dailyTotals = Array(7).fill(0);
+    const monthlyData = Array(12).fill(0);
+    const monthDays = trendMonth
+      ? new Date(trendYear, trendMonth, 0).getDate()
+      : 0;
+    const selectedMonthDailyData = Array(monthDays).fill(0);
+    const availableYearSet = new Set([now.getFullYear(), trendYear]);
+
+    let highestExpense = 0;
+    let thisMonthSpend = 0;
+
+    dashboardExpenses.forEach((expense) => {
+      const amount = Number(expense.amount) || 0;
+      highestExpense = Math.max(highestExpense, amount);
+      addToGroup(categoryCounts, expense.category, amount);
+      addToGroup(paymentMethodTotals, expense.paymentMethod, amount);
+      addToGroup(merchantTotals, expense.shop, amount);
+    });
+
+    datedExpenses.forEach((expense) => {
+      const amount = Number(expense.amount) || 0;
+      const date = expense.parsedDate;
+      availableYearSet.add(date.getFullYear());
+
+      if (date >= currentMonthStart && date < nextCurrentMonthStart) {
+        thisMonthSpend += amount;
+      }
+
+      if (date >= weekStart && date <= weekEnd) {
+        dailyTotals[date.getDay()] += amount;
+      }
+
+      if (date.getFullYear() === trendYear) {
+        monthlyData[date.getMonth()] += amount;
+      }
+
+      if (
+        trendMonth &&
+        date.getFullYear() === trendYear &&
+        date.getMonth() === trendMonth - 1
+      ) {
+        selectedMonthDailyData[date.getDate() - 1] += amount;
+      }
+    });
+
+    const topCategory =
+      Object.entries(categoryCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ||
+      "N/A";
+
+    const recentExpenses = dashboardExpenses
+      .slice(0, 5)
+      .map(({ parsedDate, ...expense }) => expense);
+    const expenses = dashboardExpenses.map(({ parsedDate, ...expense }) => expense);
+    const trendData = trendMonth ? selectedMonthDailyData : monthlyData;
+
+    res.json({
+      period: {
+        type: "current_month",
+        startDate: currentMonthStart,
+        endDate: nextCurrentMonthStart,
+      },
+      summary: {
+        totalSpent,
+        transactionCount: dashboardExpenses.length,
+        avgBill: dashboardExpenses.length ? totalSpent / dashboardExpenses.length : 0,
+        topCategory,
+        highestExpense,
+        thisMonthSpend,
+      },
+      breakdown: {
+        categoryCounts,
+        paymentMethodTotals,
+        merchantTotals,
+      },
+      weekly: {
+        startDate: weekStart,
+        endDate: weekEnd,
+        dailyTotals,
+      },
+      yearly: {
+        selectedYear: trendYear,
+        availableYears: Array.from(availableYearSet).sort((a, b) => b - a),
+        monthlyData,
+      },
+      trend: {
+        type: trendMonth ? "monthly" : "yearly",
+        selectedYear: trendYear,
+        selectedMonth: trendMonth,
+        title: trendMonth ? "Daily overview" : "Monthly overview",
+        categories: trendMonth
+          ? Array.from({ length: monthDays }, (_, index) => String(index + 1))
+          : [
+              "Jan",
+              "Feb",
+              "Mar",
+              "Apr",
+              "May",
+              "Jun",
+              "Jul",
+              "Aug",
+              "Sep",
+              "Oct",
+              "Nov",
+              "Dec",
+            ],
+        data: trendData,
+      },
+      recentExpenses,
+      expenses,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Server error" });
   }
 };
 

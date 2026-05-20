@@ -34,43 +34,45 @@ export default function PaymentMethodIntelligence({ expenses }: Props) {
     "bg-slate-500",
   ];
 
-  const map: Record<string, number> = {};
+  const map: Record<string, { amount: number; count: number }> = {};
 
   safeExpenses.forEach((exp) => {
     const method = exp?.paymentMethod || "Unknown";
     const amount = Number(exp?.amount) || 0;
-
-    map[method] = (map[method] || 0) + amount;
+    map[method] = {
+      amount: (map[method]?.amount || 0) + amount,
+      count: (map[method]?.count || 0) + 1,
+    };
   });
 
   const total = Object.values(map).reduce(
-    (a, b) => a + Number(b || 0),
+    (sum, item) => sum + Number(item.amount || 0),
     0
   );
 
   const sorted = Object.entries(map).sort(
-    (a, b) => Number(b[1]) - Number(a[1])
+    (a, b) => Number(b[1].amount) - Number(a[1].amount)
   );
 
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-5 py-4 h-[420px] flex flex-col">
+    <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-5 py-4 flex flex-col">
 
       {/* HEADER */}
       <div className="mb-4">
         <h3 className="text-[11px] font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide sm:text-sm">
           Payment Intelligence
         </h3>
-
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           Spending by payment method
         </p>
       </div>
 
       {/* LIST */}
-      <div className="flex-1 overflow-y-auto space-y-2.5 pr-1">
+      <div className="flex flex-col space-y-2.5">
 
         {sorted.map(([method, value], index) => {
-          const amount = Number(value) || 0;
+          const amount = Number(value.amount) || 0;
+          const count = Number(value.count) || 0;
           const percent = total ? (amount / total) * 100 : 0;
 
           const gradient = gradients[index % gradients.length];
@@ -87,35 +89,26 @@ export default function PaymentMethodIntelligence({ expenses }: Props) {
                 {/* LEFT */}
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-
-                    <div
-                      className={`h-2 w-2 rounded-full ${dot}`}
-                    />
-
+                    <div className={`h-2 w-2 rounded-full ${dot}`} />
                     <span className="text-xs font-semibold uppercase text-gray-700 dark:text-gray-200">
                       {method}
                     </span>
                   </div>
-
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {percent.toFixed(1)}% of total spend
+                    {count} {count === 1 ? "transaction" : "transactions"} • {percent.toFixed(1)}% of total spend
                   </p>
                 </div>
 
                 {/* RIGHT */}
                 <div className="text-right">
                   <p className="text-sm font-bold text-gray-900 dark:text-white">
-                    ₹
-                    {amount.toLocaleString("en-IN", {
-                      minimumFractionDigits: 2,
-                    })}
+                    ₹{amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                   </p>
                 </div>
               </div>
 
               {/* PROGRESS BAR */}
               <div className="mt-2 h-1 w-full bg-black/5 dark:bg-white/10 rounded-full overflow-hidden">
-
                 <div
                   className="h-full bg-gray-900 dark:bg-white/90 rounded-full transition-all duration-500"
                   style={{ width: `${percent}%` }}
@@ -126,7 +119,7 @@ export default function PaymentMethodIntelligence({ expenses }: Props) {
         })}
 
         {sorted.length === 0 && (
-          <div className="flex h-full items-center justify-center">
+          <div className="flex items-center justify-center py-6">
             <p className="text-sm text-gray-500 dark:text-gray-400">
               No payment data available
             </p>
