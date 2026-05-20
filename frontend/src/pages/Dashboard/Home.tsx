@@ -101,8 +101,9 @@ export default function Home() {
       {/* ROOT WRAPPER */}
       <div className="flex flex-col gap-6 min-h-screen w-full overflow-x-hidden">
 
-        {/* HEADER */}
-        <div className="flex flex-col sm:flex-row justify-between gap-4">
+        {/* HEADER (FIXED MOBILE BUTTON) */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
           <div>
             <h1 className="text-2xl font-bold">Welcome</h1>
             <p className="text-gray-500 text-sm">
@@ -110,13 +111,28 @@ export default function Home() {
             </p>
           </div>
 
-          <button
-            onClick={() => setShowReportModal(true)}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl"
-          >
-            <FileText className="size-4" />
-            Download Report
-          </button>
+          {/* BUTTON FIXED */}
+          <div className="flex sm:justify-end">
+            <button
+              onClick={() => setShowReportModal(true)}
+              className="
+                inline-flex items-center gap-2
+                w-auto
+                px-3 py-2 sm:px-4 sm:py-2
+                text-sm font-medium
+                bg-blue-600 text-white
+                rounded-lg
+                whitespace-nowrap
+                shadow-sm
+                hover:bg-blue-700
+                transition
+              "
+            >
+              <FileText className="size-4" />
+              Download Report
+            </button>
+          </div>
+
         </div>
 
         {/* METRICS */}
