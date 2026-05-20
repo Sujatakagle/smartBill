@@ -36,6 +36,28 @@ export default function Upload() {
     date: data?.date || new Date().toISOString().split("T")[0],
   });
 
+  const getFriendlyExtractionError = (message?: string) => {
+    if (!message) {
+      return "We couldn't scan this bill. Please try a clearer photo or enter the details manually.";
+    }
+
+    if (
+      message.includes("All AI models are busy") ||
+      message.toLowerCase().includes("busy")
+    ) {
+      return "We couldn't scan this bill right now. Please try again in a moment.";
+    }
+
+    if (
+      message.includes("AI extraction failed") ||
+      message.toLowerCase().includes("extraction failed")
+    ) {
+      return "We couldn't read this bill clearly. Please upload a clearer photo or enter the details manually.";
+    }
+
+    return message;
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
 
@@ -80,9 +102,7 @@ export default function Upload() {
       });
 
     } catch (err: any) {
-      const errorMsg =
-        err.response?.data?.msg ||
-        "AI extraction failed. Please try a clearer image.";
+      const errorMsg = getFriendlyExtractionError(err.response?.data?.msg);
 
       setError(errorMsg);
 

@@ -55,18 +55,43 @@ Extract data from this image carefully.
 
 IMPORTANT RULES:
 
-1. For UPI/payment screenshots:
+1. The "shop" must be the merchant/seller/payee, not the customer.
+   NEVER use names or addresses from these buyer sections as shop:
+   - BILL TO
+   - SHIP TO
+   - Customer
+   - Recipient
+   - Delivery address
+   - Place of Supply
+
+2. For invoices/e-commerce bills, choose shop using this priority:
+   a) "Sold by", "Seller", "Merchant", "Supplier", "Store", "Restaurant", or brand/store header
+   b) If "Sold by" has both a legal/person name and a trade/business name, prefer the trade/business/store name.
+   c) If only a legal seller name is visible, use that.
+   d) If no seller/payee is visible, use "Unknown Merchant".
+
+3. E-commerce invoice example:
+   If the bill says:
+   BILL TO: Customer Name
+   SHIP TO: Customer Name
+   Sold by: LEGAL SELLER NAME
+   Bright Star Store, 12 Market Road...
+   then return:
+   "shop": "Bright Star Store"
+   Do NOT return "Customer Name".
+
+4. For UPI/payment screenshots:
    - Use the receiver/person/shop name as "shop"
    - NOT the app name like PhonePe, GPay, Paytm
 
-2. Example:
+5. UPI example:
    If image shows:
    "Paid to Rahul"
    through PhonePe,
    then:
    "shop": "Rahul"
 
-3. Identify payment method if visible:
+6. Identify payment method if visible:
 - UPI
 - Cash
 - Credit Card
@@ -74,7 +99,7 @@ IMPORTANT RULES:
 - Wallet
 - Other
 
-4. Categorize intelligently:
+7. Categorize intelligently:
 - Food
 - Shopping
 - Medical
@@ -82,7 +107,16 @@ IMPORTANT RULES:
 - Bills
 - Other
 
-5. Never return null for shop, category, or paymentMethod.
+8. Date:
+   - Prefer Invoice Date or Bill Date.
+   - If Invoice Date is missing, use Order Date or transaction date.
+   - Return date as YYYY-MM-DD.
+
+9. Amount:
+   - Return the final payable total / grand total.
+   - Do not return subtotal, taxable value, discount, or tax alone.
+
+10. Never return null for shop, category, or paymentMethod.
    If shop is not visible, use "Unknown Merchant".
    If payment method is not visible, use "Other".
    If category is unclear, use "Other".
@@ -126,9 +160,9 @@ No extra text.
 
   // All models failed
   if (lastError?.message.includes('429')) {
-    throw new Error('All AI models are busy. Please wait 1-2 minutes and try again.');
+    throw new Error('We could not scan this bill right now. Please try again in a moment.');
   }
-  throw new Error('AI extraction failed. Please try again.');
+  throw new Error('We could not read this bill clearly. Please upload a clearer photo or enter the details manually.');
   console.log('error')
 };
 
@@ -168,10 +202,10 @@ ${question}`;
   }
 
   if (lastError?.message.includes("429")) {
-    throw new Error("All AI models are busy. Please wait 1-2 minutes and try again.");
+    throw new Error("The assistant is taking a little longer than usual. Please try again in a moment.");
   }
 
-  throw new Error("AI assistant failed. Please try again.");
+  throw new Error("The assistant could not answer right now. Please try again.");
 };
 
 module.exports = { extractBillData, askExpenseAssistant };
