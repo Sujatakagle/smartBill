@@ -157,7 +157,8 @@ export default function Home() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           <div className="min-w-0 flex flex-col overflow-hidden">
-            <DailyInsights expenses={expenses} />
+                                    <TopMerchants expenses={expenses} />
+
           </div>
 
           <div className="min-w-0 flex flex-col overflow-hidden">
@@ -168,19 +169,22 @@ export default function Home() {
           </div>
 
           <div className="min-w-0 flex flex-col overflow-hidden">
-            <PaymentMethodChart expenses={expenses} />
+                <PaymentMethodChart expenses={expenses} />
+
+ 
+
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-          <div className="min-w-0 flex flex-col overflow-hidden">
-            <TopMerchants expenses={expenses} />
-          </div>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
+  <div className="min-w-0 flex flex-col overflow-hidden lg:col-span-2">
+                                   <DailyInsights expenses={expenses} />
+  </div>
 
-          <div className="min-w-0 flex flex-col overflow-hidden">
-            <RecentTransactions expenses={expenses} />
-          </div>
-        </div>
+  <div className="min-w-0 flex flex-col overflow-hidden lg:col-span-3">
+    <RecentTransactions expenses={expenses} />
+  </div>
+</div>
 
         <div className="w-full min-w-0 flex flex-col overflow-hidden">
           <StatisticsChart data={monthlyData} />
