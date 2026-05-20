@@ -1,7 +1,5 @@
 import React from "react";
 import {
-  BoxIconLine,
-  GroupIcon,
   DollarLineIcon,
   PieChartIcon,
   CalenderIcon,
@@ -39,9 +37,7 @@ export default function SmartMetrics({
 
     {
       label: "Highest Bill",
-      value: `₹${(highestExpense || 0).toLocaleString(
-        "en-IN"
-      )}`,
+      value: `₹${(highestExpense || 0).toLocaleString("en-IN")}`,
       subText: "Single largest spend",
       icon: TrendingUp,
       iconColor: "text-orange-500",
@@ -49,9 +45,7 @@ export default function SmartMetrics({
 
     {
       label: "This Month",
-      value: `₹${(thisMonthSpend || 0).toLocaleString(
-        "en-IN"
-      )}`,
+      value: `₹${(thisMonthSpend || 0).toLocaleString("en-IN")}`,
       subText: "Spend in current month",
       icon: CalenderIcon,
       iconColor: "text-emerald-500",
@@ -74,25 +68,22 @@ export default function SmartMetrics({
         return (
           <div
             key={i}
-            className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white px-3 py-4 transition-all duration-300 hover:shadow-lg hover:shadow-gray-100 dark:border-gray-800 dark:bg-white/[0.03] dark:hover:shadow-none sm:px-5"
+            className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white px-3 py-4 transition-all duration-300 hover:shadow-lg dark:border-gray-800 dark:bg-white/[0.03] sm:px-5"
           >
-            {/* Decorative Circle */}
-            <div className="absolute -right-4 -top-4 size-24 rounded-full bg-gray-50 transition-transform duration-500 group-hover:scale-110 dark:bg-white/[0.02]" />
 
-            {/* Decorative Bars */}
-            <div className="absolute bottom-4 right-4 flex h-8 items-end gap-1">
+            {/* 🔥 Decorative Circle (HIDDEN ON MOBILE) */}
+            <div className="hidden sm:block absolute -right-4 -top-4 size-24 rounded-full bg-gray-50 transition-transform duration-500 group-hover:scale-110 dark:bg-white/[0.02]" />
+
+            {/* 🔥 Decorative Bars (HIDDEN ON MOBILE) */}
+            <div className="hidden sm:flex absolute bottom-4 right-4 h-8 items-end gap-1">
               <div className="h-2 w-1 rounded-full bg-gray-100 transition-all duration-300 group-hover:h-4 dark:bg-gray-800" />
-
               <div className="h-4 w-1 rounded-full bg-gray-100 transition-all duration-500 group-hover:h-6 dark:bg-gray-800" />
-
-              <div className="h-3 w-1 rounded-full bg-gray-100 transition-all duration-400 group-hover:h-5 dark:bg-gray-800" />
+              <div className="h-3 w-1 rounded-full bg-gray-100 transition-all duration-300 group-hover:h-5 dark:bg-gray-800" />
             </div>
 
             {/* HEADER */}
             <div className="relative mb-2 flex items-center gap-2">
-              <Icon
-                className={`size-6 sm:size-8 ${item.iconColor}`}
-              />
+              <Icon className={`size-6 sm:size-8 ${item.iconColor}`} />
 
               <span className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 sm:text-sm">
                 {item.label}
@@ -105,9 +96,10 @@ export default function SmartMetrics({
             </p>
 
             {/* SUBTEXT */}
-            <p className="mt-0.5 text-xs text-gray-400 sm:text-md">
+            <p className="mt-0.5 text-xs text-gray-400">
               {item.subText}
             </p>
+
           </div>
         );
       })}
