@@ -68,43 +68,7 @@ export default function SmartMetrics({
       bgColor: "bg-purple-50",
     },
 
-    {
-      label: "Avg Bill",
-      value: `₹${avgBill.toLocaleString("en-IN", {
-        maximumFractionDigits: 0,
-      })}`,
-      subText: "Average per Bill",
-      icon: TimeIcon,
-      iconColor: "text-cyan-500",
-      bgColor: "bg-cyan-50",
-    },
-
-    {
-      label: "This Week",
-      value: `₹${(thisWeekSpend || 0).toLocaleString("en-IN")}`,
-      subText: "Weekly Total",
-      icon: CalendarDays,
-      iconColor: "text-pink-500",
-      bgColor: "bg-pink-50",
-    },
-
-    {
-      label: "Top Payment",
-      value: topPaymentMethod || "N/A",
-      subText: "Primary Method",
-      icon: CreditCard,
-      iconColor: "text-indigo-500",
-      bgColor: "bg-indigo-50",
-    },
-
-    {
-      label: "Active Days",
-      value: `${activeDays || 0} Days`,
-      subText: "Usage History",
-      icon: Activity,
-      iconColor: "text-red-500",
-      bgColor: "bg-red-50",
-    },
+    
   ];
 
   return (
