@@ -160,62 +160,37 @@ export default function Home() {
       <div className="flex flex-col gap-6 min-h-screen w-full overflow-x-hidden">
 
         {/* HEADER */}
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+        <div className="flex items-center justify-between gap-4">
 
-          <div className="flex items-center justify-between gap-4 sm:block">
-            <div>
-              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                Welcome
-              </h1>
-              <p className="mt-1 hidden text-base text-gray-600 dark:text-gray-400 sm:block sm:text-lg">
-                Track your expenses, insights, and spending.
-              </p>
-            </div>
-
-            <div className="sm:hidden">
-              <button
-                onClick={() => setShowReportModal(true)}
-                className="
-                  inline-flex items-center gap-1.5
-                  px-3 py-1.5
-                  text-xs font-medium
-                  bg-blue-600 text-white
-                  rounded-md
-                  whitespace-nowrap
-                  shadow-sm
-                "
-              >
-                <FileText className="size-3.5" />
-                 Download Report
-              </button>
-            </div>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
+              Welcome
+            </h1>
+            <p className="mt-1 text-sm sm:text-lg text-gray-600 dark:text-gray-400">
+              Track your expenses, insights, and spending.
+            </p>
           </div>
 
-          {/* HIDDEN ON MOBILE (Desktop version) */}
-          <div className="hidden sm:flex">
-            <button
-              onClick={() => setShowReportModal(true)}
-              className="
-                inline-flex items-center gap-1.5
-                px-4 py-2
-                text-sm font-medium
-                bg-blue-600 text-white
-                rounded-md
-                whitespace-nowrap
-                shadow-sm
-                hover:bg-blue-700
-                transition
-              "
-            >
-              <FileText className="size-4" />
-              Download Report
-            </button>
-          </div>
-
-          {/* MOBILE ONLY SUBTEXT */}
-          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 sm:hidden">
-            Track your expenses, insights, and spending.
-          </p>
+          {/* Single unified Download Report button — same on both mobile and desktop */}
+          <button
+            onClick={() => setShowReportModal(true)}
+            className="
+              inline-flex items-center gap-2
+              px-4 py-2.5
+              text-sm font-medium
+              bg-blue-600 text-white
+              rounded-md
+              whitespace-nowrap
+              shadow-sm
+              hover:bg-blue-700
+              transition
+              shrink-0
+            "
+          >
+            <FileText className="size-4" />
+            <span className="hidden xs:inline sm:inline">Download Report</span>
+            <span className="xs:hidden sm:hidden">Report</span>
+          </button>
 
         </div>
 
@@ -233,8 +208,7 @@ export default function Home() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           <div className="min-w-0 flex flex-col overflow-hidden">
-                                    <TopMerchants expenses={expenses} />
-
+            <TopMerchants expenses={expenses} />
           </div>
 
           <div className="min-w-0 flex flex-col overflow-hidden">
@@ -245,22 +219,19 @@ export default function Home() {
           </div>
 
           <div className="min-w-0 flex flex-col overflow-hidden">
-                <PaymentMethodChart expenses={expenses} />
-
- 
-
+            <PaymentMethodChart expenses={expenses} />
           </div>
         </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
-  <div className="min-w-0 flex flex-col overflow-hidden lg:col-span-2">
-                                   <DailyInsights expenses={expenses} dailyTotals={weekly.dailyTotals} weekStart={weekly.startDate} weekEnd={weekly.endDate} />
-  </div>
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
+          <div className="min-w-0 flex flex-col overflow-hidden lg:col-span-2">
+            <DailyInsights expenses={expenses} dailyTotals={weekly.dailyTotals} weekStart={weekly.startDate} weekEnd={weekly.endDate} />
+          </div>
 
-  <div className="min-w-0 flex flex-col overflow-hidden lg:col-span-3">
-    <RecentTransactions expenses={recentExpenses} />
-  </div>
-</div>
+          <div className="min-w-0 flex flex-col overflow-hidden lg:col-span-3">
+            <RecentTransactions expenses={recentExpenses} />
+          </div>
+        </div>
 
         <div className="w-full min-w-0 flex flex-col overflow-hidden">
           <StatisticsChart
