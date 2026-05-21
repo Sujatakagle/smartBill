@@ -186,7 +186,7 @@ export default function Home() {
                 "
               >
                 <FileText className="size-3.5" />
-                Report
+                 Download Report
               </button>
             </div>
           </div>
