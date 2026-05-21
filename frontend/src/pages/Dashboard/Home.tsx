@@ -112,6 +112,31 @@ export default function Home() {
     ? dashboard.recentExpenses
     : expenses.slice(0, 5);
 
+  const activeDays =
+    summary.activeDays ||
+    new Set(expenses.map((e) => new Date(e.date).toDateString())).size;
+
+  const today = new Date();
+  const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  const thisWeekSpend =
+    summary.thisWeekSpend ??
+    expenses
+      .filter((e) => new Date(e.date) >= startOfWeek)
+      .reduce((s, e) => s + (e.amount || 0), 0);
+
+  const paymentMethods = expenses.reduce((acc: any, e) => {
+    const method = e.paymentMethod || "Other";
+    acc[method] = (acc[method] || 0) + 1;
+    return acc;
+  }, {});
+
+  const topPaymentMethod =
+    summary.topPaymentMethod ||
+    Object.entries(paymentMethods).sort((a: any, b: any) => b[1] - a[1])[0]?.[0] ||
+    "N/A";
+
   if (loading) {
     return (
       <>
@@ -135,20 +160,39 @@ export default function Home() {
       <div className="flex flex-col gap-6 min-h-screen w-full overflow-x-hidden">
 
         {/* HEADER */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
 
-          <div>
-            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
-              Welcome
-            </h1>
+          <div className="flex items-center justify-between gap-4 sm:block">
+            <div>
+              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                Welcome
+              </h1>
+              <p className="mt-1 hidden text-base text-gray-600 dark:text-gray-400 sm:block sm:text-lg">
+                Track your expenses, insights, and spending.
+              </p>
+            </div>
 
-            <p className="mt-1 text-base sm:text-lg text-gray-600 dark:text-gray-400">
-              Track your expenses, insights, and spending.
-            </p>
+            <div className="sm:hidden">
+              <button
+                onClick={() => setShowReportModal(true)}
+                className="
+                  inline-flex items-center gap-1.5
+                  px-3 py-1.5
+                  text-xs font-medium
+                  bg-blue-600 text-white
+                  rounded-md
+                  whitespace-nowrap
+                  shadow-sm
+                "
+              >
+                <FileText className="size-3.5" />
+                Report
+              </button>
+            </div>
           </div>
 
-          {/* HIDDEN ON MOBILE */}
-          <div className="hidden sm:flex justify-end">
+          {/* HIDDEN ON MOBILE (Desktop version) */}
+          <div className="hidden sm:flex">
             <button
               onClick={() => setShowReportModal(true)}
               className="
@@ -168,6 +212,11 @@ export default function Home() {
             </button>
           </div>
 
+          {/* MOBILE ONLY SUBTEXT */}
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 sm:hidden">
+            Track your expenses, insights, and spending.
+          </p>
+
         </div>
 
         <SmartMetrics
@@ -177,6 +226,9 @@ export default function Home() {
           topCategory={topCategory}
           highestExpense={highestExpense}
           thisMonthSpend={thisMonthSpend}
+          thisWeekSpend={thisWeekSpend}
+          topPaymentMethod={topPaymentMethod}
+          activeDays={activeDays}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">

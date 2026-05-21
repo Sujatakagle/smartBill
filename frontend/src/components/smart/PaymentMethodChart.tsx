@@ -55,7 +55,7 @@ export default function PaymentMethodIntelligence({ expenses }: Props) {
   );
 
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-5 py-4 flex flex-col">
+    <div className="flex h-full min-h-[420px] w-full flex-col rounded-xl border border-gray-200 bg-white px-5 py-4 dark:border-gray-800 dark:bg-white/[0.03]">
 
       {/* HEADER */}
       <div className="mb-4">
@@ -68,7 +68,7 @@ export default function PaymentMethodIntelligence({ expenses }: Props) {
       </div>
 
       {/* LIST */}
-      <div className="flex flex-col space-y-2.5">
+      <div className="flex flex-1 flex-col space-y-2.5 overflow-y-auto pr-1">
 
         {sorted.map(([method, value], index) => {
           const amount = Number(value.amount) || 0;
@@ -119,7 +119,7 @@ export default function PaymentMethodIntelligence({ expenses }: Props) {
         })}
 
         {sorted.length === 0 && (
-          <div className="flex items-center justify-center py-6">
+          <div className="flex flex-1 items-center justify-center py-6">
             <p className="text-sm text-gray-500 dark:text-gray-400">
               No payment data available
             </p>
